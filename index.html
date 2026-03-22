@@ -10,11 +10,21 @@
   .container { width: 100%; max-width: 600px; margin-top: 10px; }
   textarea, select, .box { width: 100%; margin: 6px 0; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #222; color: #fff; box-sizing: border-box; resize: vertical; font-size: 1em; outline: none; }
   textarea:focus { border-color: #66ff99; }
+  
+  .label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+  .clear-link { font-size: 0.75em; color: #ff5555; cursor: pointer; text-transform: uppercase; font-weight: bold; text-decoration: none; border: 1px solid #ff5555; padding: 2px 8px; border-radius: 4px; transition: 0.2s; }
+  .clear-link:hover { background: #ff5555; color: #fff; }
+
   .color-row { display: flex; gap: 20px; justify-content: center; margin: 15px 0; }
   .color-item { display: flex; flex-direction: column; align-items: center; flex: 1; }
   input[type="color"] { -webkit-appearance: none; border: 2px solid #fff; width: 60px; height: 60px; cursor: pointer; background: none; border-radius: 8px; padding: 0; }
   input[type="color"]::-webkit-color-swatch { border: none; border-radius: 6px; }
-  label { display: block; margin-bottom: 5px; font-size: 0.85em; color: #aaa; text-transform: uppercase; }
+  label { display: block; font-size: 0.85em; color: #aaa; text-transform: uppercase; }
+  
+  .presets { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 15px; }
+  .preset-btn { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; transition: transform 0.2s; }
+  .preset-btn:hover { transform: scale(1.2); }
+
   .preview { margin-top: 20px; font-size: 1.4em; white-space: pre-wrap; font-weight: bold; text-align: center; min-height: 1.5em; line-height: 1.2; }
   .output-wrapper { position: relative; margin-top: 15px; display: flex; flex-direction: column; gap: 10px; }
   .box { background: #000; font-family: monospace; word-break: break-all; font-size: 0.9em; min-height: 80px; }
@@ -52,7 +62,10 @@
 <body>
 
 <div class="container">
-  <label>Dein Text</label>
+  <div class="label-row">
+    <label>Dein Text</label>
+    <div class="clear-link" onclick="clearText()">Leeren</div>
+  </div>
   <textarea id="text" rows="3" oninput="saveAndRender()" placeholder="Hier Text eingeben..."></textarea>
 
   <div class="color-row">
@@ -64,6 +77,15 @@
       <label>Ende</label>
       <input type="color" id="end" value="#ff00ff" oninput="saveAndRender()">
     </div>
+  </div>
+
+  <div class="presets">
+    <div class="preset-btn" style="background: linear-gradient(135deg, #00ffff, #ff00ff)" onclick="applyPreset('#00ffff', '#ff00ff')" title="Cyberpunk"></div>
+    <div class="preset-btn" style="background: linear-gradient(135deg, #ff9900, #ff0000)" onclick="applyPreset('#ff9900', '#ff0000')" title="Fire"></div>
+    <div class="preset-btn" style="background: linear-gradient(135deg, #00ff00, #0099ff)" onclick="applyPreset('#00ff00', '#0099ff')" title="Ocean Forest"></div>
+    <div class="preset-btn" style="background: linear-gradient(135deg, #ffff00, #ff9900)" onclick="applyPreset('#ffff00', '#ff9900')" title="Sunset"></div>
+    <div class="preset-btn" style="background: linear-gradient(135deg, #ffffff, #444444)" onclick="applyPreset('#ffffff', '#444444')" title="Silver"></div>
+    <div class="preset-btn" style="background: linear-gradient(135deg, #ff0080, #5500ff)" onclick="applyPreset('#ff0080', '#5500ff')" title="Vaporwave"></div>
   </div>
 
   <label>Modus</label>
@@ -102,6 +124,17 @@ let archive = JSON.parse(localStorage.getItem('gow_grad_archive') || "[]");
 
 function hex(c){return Math.round(c).toString(16).padStart(2,'0')}
 function lerp(a,b,t){return a+(b-a)*t}
+
+function clearText() {
+  document.getElementById('text').value = '';
+  saveAndRender();
+}
+
+function applyPreset(s, e) {
+  document.getElementById('start').value = s;
+  document.getElementById('end').value = e;
+  saveAndRender();
+}
 
 function build(text, mode, start, end){
   if(!text) return {out: "", prev: ""};
