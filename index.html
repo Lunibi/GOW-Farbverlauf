@@ -1,334 +1,71 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GOW Farbeditor</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><defs><linearGradient id=%22g%22 x1=%220%25%22 y1=%220%25%22 x2=%22100%25%22 y2=%22100%25%22><stop offset=%220%25%22 style=%22stop-color:%2300ffff;stop-opacity:1%22 /><stop offset=%22100%25%22 style=%22stop-color:%23ff00ff;stop-opacity:1%22 /></linearGradient></defs><circle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22url(%23g)%22 stroke=%22white%22 stroke-width=%225%22/></svg>">
-<style>
-  body { font-family: sans-serif; background: #111; color: #eee; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-  .container { width: 100%; max-width: 600px; margin-top: 10px; }
-  textarea, select, .box { width: 100%; margin: 6px 0; padding: 10px; border-radius: 8px; border: 1px solid #444; background: #222; color: #fff; box-sizing: border-box; resize: vertical; font-size: 1em; outline: none; }
-  textarea:focus { border-color: #66ff99; }
-  
-  .label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-  .clear-link { font-size: 0.75em; color: #ff5555; cursor: pointer; text-transform: uppercase; font-weight: bold; text-decoration: none; border: 1px solid #ff5555; padding: 2px 8px; border-radius: 4px; transition: 0.2s; }
-  .clear-link:hover { background: #ff5555; color: #fff; }
-
-  .color-row { display: flex; gap: 20px; justify-content: center; margin: 15px 0; }
-  .color-item { display: flex; flex-direction: column; align-items: center; flex: 1; }
-  input[type="color"] { -webkit-appearance: none; border: 2px solid #fff; width: 60px; height: 60px; cursor: pointer; background: none; border-radius: 8px; padding: 0; }
-  input[type="color"]::-webkit-color-swatch { border: none; border-radius: 6px; }
-  label { display: block; font-size: 0.85em; color: #aaa; text-transform: uppercase; }
-  
-  .presets { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 15px; }
-  .preset-btn { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #fff; cursor: pointer; transition: transform 0.2s; }
-  .preset-btn:hover { transform: scale(1.2); }
-
-  .preview { margin-top: 20px; font-size: 1.4em; white-space: pre-wrap; font-weight: bold; text-align: center; min-height: 1.5em; line-height: 1.2; }
-  .output-wrapper { position: relative; margin-top: 15px; display: flex; flex-direction: column; gap: 10px; }
-  .box { background: #000; font-family: monospace; word-break: break-all; font-size: 0.9em; min-height: 80px; }
-  
-  .btn-group { display: flex; gap: 10px; }
-  .copy-btn { flex: 2; padding: 12px; background: #444; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background 0.2s; }
-  .copy-btn:hover { background: #555; }
-  .save-btn { flex: 1; padding: 12px; background: #222; color: #66ff99; border: 1px solid #66ff99; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.8em; text-transform: uppercase; transition: all 0.2s; }
-  .save-btn:hover { background: #66ff99; color: #000; }
-
-  .counter { margin-top: 15px; font-weight: bold; text-align: right; font-size: 0.9em; }
-  .bad { color: #ff5555; }
-  .ok { color: #66ff99; }
-  
-  .section-container { margin-top: 30px; width: 100%; border-top: 1px solid #333; padding-top: 20px; margin-bottom: 40px; }
-  .section-title { font-size: 0.9em; color: #888; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; text-align: center; font-weight: bold; }
-  .item-list { display: flex; flex-direction: column; gap: 15px; }
-  .item-card { background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 15px; display: flex; flex-direction: column; align-items: center; gap: 12px; transition: border-color 0.2s; }
-  .item-card:hover { border-color: #444; }
-  .item-preview { font-size: 1.2em; font-weight: bold; text-align: center; line-height: 1.2; word-break: break-word; }
-  
-  .item-actions { display: flex; gap: 8px; width: 100%; justify-content: center; flex-wrap: wrap; }
-  .action-btn { padding: 6px 12px; background: #333; color: #66ff99; border: 1px solid #444; border-radius: 4px; cursor: pointer; font-size: 0.7em; font-weight: bold; text-transform: uppercase; transition: all 0.2s; }
-  .action-btn:hover { background: #444; border-color: #66ff99; }
-  .load-btn { color: #fff; border-color: #666; }
-  .load-btn:hover { background: #555; border-color: #fff; }
-  .delete-btn { color: #ff5555; border-color: #444; }
-  .delete-btn:hover { background: #300; border-color: #ff5555; }
-
-  .data-section { margin-top: 40px; padding: 20px 0; border-top: 1px dashed #333; display: flex; justify-content: center; gap: 15px; }
-  .data-btn { background: none; border: 1px solid #444; color: #888; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 0.7em; text-transform: uppercase; transition: all 0.2s; }
-  .data-btn:hover { border-color: #666; color: #eee; background: #1a1a1a; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GOW Farbeditor</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><defs><linearGradient id=%22g%22 x1=%220%25%22 y1=%220%25%22 x2=%22100%25%22 y2=%22100%25%22><stop offset=%220%25%22 style=%22stop-color:%2300ffff;stop-opacity:1%22 /><stop offset=%22100%25%22 style=%22stop-color:%23ff00ff;stop-opacity:1%22 /></linearGradient></defs><circle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22url(%23g)%22 stroke=%22white%22 stroke-width=%225%22/></svg>">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="container">
-  <div class="label-row">
-    <label>Dein Text</label>
-    <div class="clear-link" onclick="clearText()">Leeren</div>
-  </div>
-  <textarea id="text" rows="3" oninput="saveAndRender()" placeholder="Hier Text eingeben..."></textarea>
-
-  <div class="color-row">
-    <div class="color-item">
-      <label>Start</label>
-      <input type="color" id="start" value="#00ffff" oninput="saveAndRender()">
+    <div class="label-row">
+        <label>Dein Text</label>
+        <div class="clear-link" onclick="clearText()">Leeren</div>
     </div>
-    <div class="color-item">
-      <label>Ende</label>
-      <input type="color" id="end" value="#ff00ff" oninput="saveAndRender()">
+    <textarea id="text" rows="3" oninput="saveAndRender()" placeholder="Hier Text eingeben..."></textarea>
+
+    <div class="color-row">
+        <div class="color-item">
+            <label>Start</label>
+            <input type="color" id="start" value="#00ffff" oninput="saveAndRender()">
+        </div>
+        <div class="color-item">
+            <label>Ende</label>
+            <input type="color" id="end" value="#ff00ff" oninput="saveAndRender()">
+        </div>
     </div>
-  </div>
 
-  <div class="presets">
-    <div class="preset-btn" style="background: linear-gradient(135deg, #00ffff, #ff00ff)" onclick="applyPreset('#00ffff', '#ff00ff')" title="Cyberpunk"></div>
-    <div class="preset-btn" style="background: linear-gradient(135deg, #ff9900, #ff0000)" onclick="applyPreset('#ff9900', '#ff0000')" title="Fire"></div>
-    <div class="preset-btn" style="background: linear-gradient(135deg, #00ff00, #0099ff)" onclick="applyPreset('#00ff00', '#0099ff')" title="Ocean Forest"></div>
-    <div class="preset-btn" style="background: linear-gradient(135deg, #ffff00, #ff9900)" onclick="applyPreset('#ffff00', '#ff9900')" title="Sunset"></div>
-    <div class="preset-btn" style="background: linear-gradient(135deg, #ffffff, #444444)" onclick="applyPreset('#ffffff', '#444444')" title="Silver"></div>
-    <div class="preset-btn" style="background: linear-gradient(135deg, #ff0080, #5500ff)" onclick="applyPreset('#ff0080', '#5500ff')" title="Vaporwave"></div>
-  </div>
-
-  <label>Modus</label>
-  <select id="mode" onchange="saveAndRender()">
-    <option value="char">Jeder Buchstabe</option>
-    <option value="2char">Alle 2 Buchstaben</option>
-    <option value="word">Jedes Wort</option>
-  </select>
-
-  <div class="counter" id="count"></div>
-  <div class="preview" id="preview"></div>
-
-  <div class="output-wrapper">
-    <textarea class="box" id="output" rows="3"></textarea>
-    <div class="btn-group">
-        <button class="copy-btn" id="copyBtn" onclick="copyToClipboard()">CODE KOPIEREN</button>
-        <button class="save-btn" id="saveBtn" onclick="saveToArchive()">ARCHIVIEREN</button>
+    <div class="presets">
+        <div class="preset-btn" style="background: linear-gradient(135deg, #00ffff, #ff00ff)" onclick="applyPreset('#00ffff', '#ff00ff')" title="Cyberpunk"></div>
+        <div class="preset-btn" style="background: linear-gradient(135deg, #ff9900, #ff0000)" onclick="applyPreset('#ff9900', '#ff0000')" title="Fire"></div>
+        <div class="preset-btn" style="background: linear-gradient(135deg, #00ff00, #0099ff)" onclick="applyPreset('#00ff00', '#0099ff')" title="Ocean Forest"></div>
+        <div class="preset-btn" style="background: linear-gradient(135deg, #ffff00, #ff9900)" onclick="applyPreset('#ffff00', '#ff9900')" title="Sunset"></div>
+        <div class="preset-btn" style="background: linear-gradient(135deg, #ffffff, #444444)" onclick="applyPreset('#ffffff', '#444444')" title="Silver"></div>
+        <div class="preset-btn" style="background: linear-gradient(135deg, #ff0080, #5500ff)" onclick="applyPreset('#ff0080', '#5500ff')" title="Vaporwave"></div>
     </div>
-  </div>
 
-  <div class="section-container" id="archiveContainer" style="display: none;">
-    <div class="section-title">Dein Archiv</div>
-    <div id="archiveList" class="item-list"></div>
-  </div>
+    <label>Modus</label>
+    <select id="mode" onchange="saveAndRender()">
+        <option value="char">Jeder Buchstabe</option>
+        <option value="2char">Alle 2 Buchstaben</option>
+        <option value="word">Jedes Wort</option>
+    </select>
 
-  <div class="data-section">
-    <button class="data-btn" onclick="exportData()">Daten Exportieren</button>
-    <button class="data-btn" onclick="document.getElementById('importFile').click()">Daten Importieren</button>
-    <input type="file" id="importFile" style="display:none" onchange="importData(event)" accept=".json">
-  </div>
+    <div class="counter" id="count"></div>
+    <div class="preview" id="preview"></div>
+
+    <div class="output-wrapper">
+        <textarea class="box" id="output" rows="3"></textarea>
+        <div class="btn-group">
+            <button class="copy-btn" id="copyBtn" onclick="copyToClipboard()">CODE KOPIEREN</button>
+            <button class="save-btn" id="saveBtn" onclick="saveToArchive()">ARCHIVIEREN</button>
+        </div>
+    </div>
+
+    <div class="section-container" id="archiveContainer" style="display: none;">
+        <div class="section-title">Dein Archiv</div>
+        <div id="archiveList" class="item-list"></div>
+    </div>
+
+    <div class="data-section">
+        <button class="data-btn" onclick="exportData()">Daten Exportieren</button>
+        <button class="data-btn" onclick="document.getElementById('importFile').click()">Daten Importieren</button>
+        <input type="file" id="importFile" style="display:none" onchange="importData(event)" accept=".json">
+    </div>
 </div>
 
-<script>
-const LIMIT = 255;
-let archive = JSON.parse(localStorage.getItem('gow_grad_archive') || "[]");
-
-function hex(c){return Math.round(c).toString(16).padStart(2,'0')}
-function lerp(a,b,t){return a+(b-a)*t}
-
-function clearText() {
-  document.getElementById('text').value = '';
-  saveAndRender();
-}
-
-function applyPreset(s, e) {
-  document.getElementById('start').value = s;
-  document.getElementById('end').value = e;
-  saveAndRender();
-}
-
-function build(text, mode, start, end){
-  if(!text) return {out: "", prev: ""};
-  let items = [];
-  if(mode === "word") items = text.split(/(\s+)/);
-  else if(mode === "2char") {
-    let result = [], temp = "";
-    for (let char of text) {
-      if (/\s/.test(char)) { if (temp) { result.push(temp); temp = ""; } result.push(char); }
-      else { temp += char; if (temp.length === 2) { result.push(temp); temp = ""; } }
-    }
-    if (temp) result.push(temp);
-    items = result;
-  } else items = [...text];
-
-  const coloredItems = items.filter(u => u && !/^\s+$/.test(u));
-  let i = 0, out = "", prev = "";
-  items.forEach(u => {
-    if(!u) return;
-    if(/^\s+$/.test(u)){ out += u; prev += u; return; }
-    const t = coloredItems.length > 1 ? i / (coloredItems.length - 1) : 0;
-    const r = hex(lerp(start[0], end[0], t)), g = hex(lerp(start[1], end[1], t)), b = hex(lerp(start[2], end[2], t));
-    out += `[${r}${g}${b}]${u}`;
-    prev += `<span style="color:#${r}${g}${b}">${u}</span>`;
-    i++;
-  });
-  return {out, prev};
-}
-
-function saveAndRender() {
-  localStorage.setItem('gow_grad_text', document.getElementById('text').value);
-  localStorage.setItem('gow_grad_start', document.getElementById('start').value);
-  localStorage.setItem('gow_grad_end', document.getElementById('end').value);
-  localStorage.setItem('gow_grad_mode', document.getElementById('mode').value);
-  render();
-}
-
-function render(){
-  const text = document.getElementById('text').value, startHex = document.getElementById('start').value, endHex = document.getElementById('end').value;
-  const parseColor = (hexStr) => (hexStr.match(/[0-9a-f]{2}/gi) || ["00","00","00"]).map(x => parseInt(x, 16));
-  const start = parseColor(startHex), end = parseColor(endHex), mode = document.getElementById('mode').value;
-  let result = build(text, mode, start, end);
-  document.getElementById('output').value = result.out;
-  document.getElementById('preview').innerHTML = result.prev;
-  const c = result.out.length;
-  const counter = document.getElementById('count');
-  counter.textContent = `Zeichen: ${c} / ${LIMIT}`;
-  counter.className = "counter " + (c > LIMIT ? "bad" : "ok");
-}
-
-function copyToClipboard() {
-  const text = document.getElementById('output').value;
-  if(!text) return;
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = document.getElementById('copyBtn');
-    const oldText = btn.textContent;
-    btn.textContent = "KOPIERT! ✓";
-    btn.style.background = "#28a745";
-    setTimeout(() => { btn.textContent = oldText; btn.style.background = "#444"; }, 2000);
-  });
-}
-
-function saveToArchive() {
-  const textInput = document.getElementById('text').value;
-  const startColor = document.getElementById('start').value;
-  const endColor = document.getElementById('end').value;
-  const modeSelect = document.getElementById('mode').value;
-  const outputCode = document.getElementById('output').value;
-  const previewHtml = document.getElementById('preview').innerHTML;
-
-  if(!outputCode) return;
-  if (archive.some(item => item.out === outputCode)) return;
-
-  const newItem = {
-    out: outputCode,
-    prev: previewHtml,
-    rawText: textInput,
-    start: startColor,
-    end: endColor,
-    mode: modeSelect
-  };
-
-  archive.unshift(newItem);
-  localStorage.setItem('gow_grad_archive', JSON.stringify(archive));
-  renderArchive();
-  
-  const btn = document.getElementById('saveBtn');
-  btn.textContent = "GESPEICHERT!";
-  setTimeout(() => { btn.textContent = "ARCHIVIEREN"; }, 2000);
-}
-
-function removeFromArchive(index) {
-  archive.splice(index, 1);
-  localStorage.setItem('gow_grad_archive', JSON.stringify(archive));
-  renderArchive();
-}
-
-function loadFromArchive(index) {
-  const item = archive[index];
-  if (!item || !item.rawText) return;
-
-  document.getElementById('text').value = item.rawText;
-  document.getElementById('start').value = item.start;
-  document.getElementById('end').value = item.end;
-  document.getElementById('mode').value = item.mode;
-  
-  saveAndRender();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function renderArchive() {
-  const container = document.getElementById('archiveContainer');
-  const list = document.getElementById('archiveList');
-  if (archive.length === 0) { container.style.display = 'none'; return; }
-  container.style.display = 'block';
-  list.innerHTML = '';
-  archive.forEach((item, index) => {
-    const div = document.createElement('div');
-    div.className = 'item-card';
-    div.innerHTML = `
-      <div class="item-preview">${item.prev}</div>
-      <div class="item-actions">
-        <button class="action-btn copy-item">Kopieren</button>
-        ${item.rawText !== undefined ? `<button class="action-btn load-btn load-item">Laden</button>` : ''}
-        <button class="action-btn delete-btn remove-item">Löschen</button>
-      </div>
-    `;
-    div.querySelector('.copy-item').onclick = () => {
-      navigator.clipboard.writeText(item.out);
-      const btn = div.querySelector('.copy-item');
-      btn.textContent = 'KOPIERT!';
-      btn.style.background = '#28a745'; btn.style.color = '#fff';
-      setTimeout(() => { btn.textContent = 'Kopieren'; btn.style.background = '#333'; btn.style.color = '#66ff99'; }, 1500);
-    };
-    const loadBtn = div.querySelector('.load-item');
-    if (loadBtn) loadBtn.onclick = () => loadFromArchive(index);
-    div.querySelector('.remove-item').onclick = () => removeFromArchive(index);
-    list.appendChild(div);
-  });
-}
-
-function loadSettings() {
-  const sText = localStorage.getItem('gow_grad_text'), sStart = localStorage.getItem('gow_grad_start'), sEnd = localStorage.getItem('gow_grad_end'), sMode = localStorage.getItem('gow_grad_mode');
-  if (sText !== null) document.getElementById('text').value = sText;
-  if (sStart !== null) document.getElementById('start').value = sStart;
-  if (sEnd !== null) document.getElementById('end').value = sEnd;
-  if (sMode !== null) document.getElementById('mode').value = sMode;
-  render();
-  renderArchive();
-}
-
-function exportData() {
-  const data = {
-    text: localStorage.getItem('gow_grad_text'),
-    start: localStorage.getItem('gow_grad_start'),
-    end: localStorage.getItem('gow_grad_end'),
-    mode: localStorage.getItem('gow_grad_mode'),
-    archive: archive
-  };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `gow_editor_backup_${new Date().toISOString().slice(0,10)}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function importData(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    try {
-      const data = JSON.parse(e.target.result);
-      if (data.text !== undefined) localStorage.setItem('gow_grad_text', data.text);
-      if (data.start !== undefined) localStorage.setItem('gow_grad_start', data.start);
-      if (data.end !== undefined) localStorage.setItem('gow_grad_end', data.end);
-      if (data.mode !== undefined) localStorage.setItem('gow_grad_mode', data.mode);
-      if (data.archive !== undefined) {
-        localStorage.setItem('gow_grad_archive', JSON.stringify(data.archive));
-        archive = data.archive;
-      }
-      loadSettings();
-      alert("Daten erfolgreich importiert!");
-    } catch (err) {
-      alert("Fehler beim Importieren: " + err.message);
-    }
-  };
-  reader.readAsText(file);
-  event.target.value = '';
-}
-
-loadSettings();
-</script>
+<script src="script.js"></script>
 </body>
 </html>
