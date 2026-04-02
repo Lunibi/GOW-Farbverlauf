@@ -182,6 +182,15 @@ function exportData() {
     URL.revokeObjectURL(url);
 }
 
+function showToast(message, isError = false) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.className = 'toast show' + (isError ? ' error' : '');
+    setTimeout(() => {
+        toast.className = 'toast';
+    }, 3000);
+}
+
 function importData(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -198,9 +207,9 @@ function importData(event) {
                 archive = data.archive;
             }
             loadSettings();
-            alert("Daten erfolgreich importiert!");
+            showToast("Daten erfolgreich importiert!");
         } catch (err) {
-            alert("Fehler beim Importieren: " + err.message);
+            showToast("Fehler beim Importieren: " + err.message, true);
         }
     };
     reader.readAsText(file);
