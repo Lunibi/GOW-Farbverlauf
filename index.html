@@ -11,7 +11,6 @@
 
 <div class="container">
     <div class="label-row">
-        <label>Dein Text</label>
         <div class="clear-link" onclick="clearText()">Leeren</div>
     </div>
     <textarea id="text" rows="3" oninput="saveAndRender()" placeholder="Hier Text eingeben..."></textarea>
@@ -27,13 +26,21 @@
         </div>
     </div>
 
-    <div class="presets">
+    <div class="presets" id="defaultPresets">
         <div class="preset-btn" style="background: linear-gradient(135deg, #00ffff, #ff00ff)" onclick="applyPreset('#00ffff', '#ff00ff')" title="Cyberpunk"></div>
         <div class="preset-btn" style="background: linear-gradient(135deg, #ff9900, #ff0000)" onclick="applyPreset('#ff9900', '#ff0000')" title="Fire"></div>
         <div class="preset-btn" style="background: linear-gradient(135deg, #00ff00, #0099ff)" onclick="applyPreset('#00ff00', '#0099ff')" title="Ocean Forest"></div>
         <div class="preset-btn" style="background: linear-gradient(135deg, #ffff00, #ff9900)" onclick="applyPreset('#ffff00', '#ff9900')" title="Sunset"></div>
         <div class="preset-btn" style="background: linear-gradient(135deg, #ffffff, #444444)" onclick="applyPreset('#ffffff', '#444444')" title="Silver"></div>
         <div class="preset-btn" style="background: linear-gradient(135deg, #ff0080, #5500ff)" onclick="applyPreset('#ff0080', '#5500ff')" title="Vaporwave"></div>
+        <button class="add-preset-btn" onclick="saveCustomPreset()" title="Als Vorlage speichern">+</button>
+    </div>
+
+    <div id="customPresetsContainer" class="custom-presets-container" style="display: none;">
+        <div class="custom-presets-header">
+            <label>Eigene Vorlagen</label>
+        </div>
+        <div class="presets" id="customPresetsList"></div>
     </div>
 
     <label>Modus</label>
@@ -55,15 +62,42 @@
     </div>
 
     <div class="section-container" id="archiveContainer" style="display: none;">
-        <div class="section-title">Dein Archiv</div>
+        <div class="section-title">Archiv</div>
         <div id="archiveList" class="item-list"></div>
     </div>
 
     <div class="data-section">
-        <button class="data-btn" onclick="exportData()">Daten Exportieren</button>
-        <button class="data-btn" onclick="document.getElementById('importFile').click()">Daten Importieren</button>
-        <input type="file" id="importFile" style="display:none" onchange="importData(event)" accept=".json">
+        <button class="data-btn" onclick="openExportModal()">Code Exportieren</button>
+        <button class="data-btn" onclick="openImportModal()">Code Importieren</button>
     </div>
+
+    <!-- Export Modal -->
+    <div id="exportModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-title">Daten Exportieren</div>
+            <p class="modal-text">Kopiere diesen Code, um deine Daten später wiederherzustellen:</p>
+            <textarea id="exportText" class="modal-textarea" readonly></textarea>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-secondary" onclick="closeModal('exportModal')">Abbrechen</button>
+                <button class="modal-btn modal-btn-primary" onclick="copyExportCode()">In die Zwischenablage kopieren</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div id="importModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-title">Daten Importieren</div>
+            <p class="modal-text">Füge hier deinen Export-Code ein:</p>
+            <textarea id="importInput" class="modal-textarea" placeholder="Code hier einfügen..."></textarea>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-secondary" onclick="closeModal('importModal')">Abbrechen</button>
+                <button class="modal-btn modal-btn-primary" onclick="importFromInput()">Importieren</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
 </div>
 
 <script src="script.js"></script>

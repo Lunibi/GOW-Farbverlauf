@@ -1,8 +1,76 @@
 const LIMIT = 255;
 let archive = JSON.parse(localStorage.getItem('gow_grad_archive') || "[]");
+let customPresets = JSON.parse(localStorage.getItem('gow_grad_custom_presets') || "[]");
 
 function hex(c){return Math.round(c).toString(16).padStart(2,'0')}
 function lerp(a,b,t){return a+(b-a)*t}
+
+function saveCustomPreset() {
+    const start = document.getElementById('start').value;
+    const end = document.getElementById('end').value;
+    
+    if (customPresets.some(p => p.start === start && p.end === end)) {
+        showToast("Vorlage existiert bereits!");
+        return;
+    }
+
+    customPresets.push({ start, end });
+    localStorage.setItem('gow_grad_custom_presets', JSON.stringify(customPresets));
+    renderCustomPresets();
+    showToast("Vorlage gespeichert!");
+}
+
+function removeCustomPreset(index, btn) {
+    if (!btn.classList.contains('confirm')) {
+        btn.textContent = 'Sicher?';
+        btn.classList.add('confirm');
+        btn.onmouseleave = () => {
+            btn.textContent = '×';
+            btn.classList.remove('confirm');
+        };
+        return;
+    }
+    
+    customPresets.splice(index, 1);
+    localStorage.setItem('gow_grad_custom_presets', JSON.stringify(customPresets));
+    renderCustomPresets();
+    showToast("Vorlage gelöscht!");
+}
+
+function renderCustomPresets() {
+    const container = document.getElementById('customPresetsContainer');
+    const list = document.getElementById('customPresetsList');
+    
+    if (customPresets.length === 0) {
+        container.style.display = 'none';
+        return;
+    }
+    
+    container.style.display = 'block';
+    list.innerHTML = '';
+    
+    customPresets.forEach((p, index) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'preset-wrapper';
+        
+        const btn = document.createElement('div');
+        btn.className = 'preset-btn';
+        btn.style.background = `linear-gradient(135deg, ${p.start}, ${p.end})`;
+        btn.onclick = () => applyPreset(p.start, p.end);
+        
+        const delBtn = document.createElement('button');
+        delBtn.className = 'delete-preset-btn';
+        delBtn.textContent = '×';
+        delBtn.onclick = (e) => {
+            e.stopPropagation();
+            removeCustomPreset(index, delBtn);
+        };
+        
+        wrapper.appendChild(btn);
+        wrapper.appendChild(delBtn);
+        list.appendChild(wrapper);
+    });
+}
 
 function clearText() {
     document.getElementById('text').value = '';
@@ -163,23 +231,86 @@ function loadSettings() {
     if (sMode !== null) document.getElementById('mode').value = sMode;
     render();
     renderArchive();
+    renderCustomPresets();
 }
 
-function exportData() {
+function openExportModal() {
     const data = {
         text: localStorage.getItem('gow_grad_text'),
         start: localStorage.getItem('gow_grad_start'),
         end: localStorage.getItem('gow_grad_end'),
         mode: localStorage.getItem('gow_grad_mode'),
-        archive: archive
+        archive: archive,
+        customPresets: customPresets
     };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `gow_editor_backup_${new Date().toISOString().slice(0,10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+    const jsonStr = JSON.stringify(data);
+    const base64 = btoa(unescape(encodeURIComponent(jsonStr)));
+    document.getElementById('exportText').value = base64;
+    document.getElementById('exportModal').classList.add('show');
+}
+
+function copyExportCode() {
+    const textArea = document.getElementById('exportText');
+    
+    textArea.select();
+    textArea.setSelectionRange(0, 99999);
+
+    try {
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(textArea.value).then(() => {
+                showToast("Code in Zwischenablage kopiert!");
+                closeModal('exportModal');
+            });
+        } else {
+            document.execCommand('copy');
+            showToast("Code in Zwischenablage kopiert!");
+            closeModal('exportModal');
+        }
+    } catch (err) {
+        document.execCommand('copy');
+        showToast("Code in Zwischenablage kopiert!");
+        closeModal('exportModal');
+    }
+}
+
+function openImportModal() {
+    const input = document.getElementById('importInput');
+    input.value = '';
+    document.getElementById('importModal').classList.add('show');
+    // Kurze Verzögerung für den Fokus, damit das Element sicher sichtbar ist
+    setTimeout(() => input.focus(), 10);
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove('show');
+}
+
+function importFromInput() {
+    const text = document.getElementById('importInput').value.trim();
+    if (!text) return;
+    try {
+        const jsonStr = decodeURIComponent(escape(atob(text)));
+        const data = JSON.parse(jsonStr);
+        
+        if (data.text !== undefined) localStorage.setItem('gow_grad_text', data.text);
+        if (data.start !== undefined) localStorage.setItem('gow_grad_start', data.start);
+        if (data.end !== undefined) localStorage.setItem('gow_grad_end', data.end);
+        if (data.mode !== undefined) localStorage.setItem('gow_grad_mode', data.mode);
+        if (data.archive !== undefined) {
+            localStorage.setItem('gow_grad_archive', JSON.stringify(data.archive));
+            archive = data.archive;
+        }
+        if (data.customPresets !== undefined) {
+            localStorage.setItem('gow_grad_custom_presets', JSON.stringify(data.customPresets));
+            customPresets = data.customPresets;
+        }
+        
+        loadSettings();
+        showToast("Daten erfolgreich importiert!");
+        closeModal('importModal');
+    } catch (err) {
+        showToast("Fehler: Ungültiger Import-Code!", true);
+    }
 }
 
 function showToast(message, isError = false) {
@@ -189,31 +320,6 @@ function showToast(message, isError = false) {
     setTimeout(() => {
         toast.className = 'toast';
     }, 3000);
-}
-
-function importData(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        try {
-            const data = JSON.parse(e.target.result);
-            if (data.text !== undefined) localStorage.setItem('gow_grad_text', data.text);
-            if (data.start !== undefined) localStorage.setItem('gow_grad_start', data.start);
-            if (data.end !== undefined) localStorage.setItem('gow_grad_end', data.end);
-            if (data.mode !== undefined) localStorage.setItem('gow_grad_mode', data.mode);
-            if (data.archive !== undefined) {
-                localStorage.setItem('gow_grad_archive', JSON.stringify(data.archive));
-                archive = data.archive;
-            }
-            loadSettings();
-            showToast("Daten erfolgreich importiert!");
-        } catch (err) {
-            showToast("Fehler beim Importieren: " + err.message, true);
-        }
-    };
-    reader.readAsText(file);
-    event.target.value = '';
 }
 
 loadSettings();
